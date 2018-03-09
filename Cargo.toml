@@ -1,0 +1,6 @@
+[package]
+name = "riimote"
+version = "0.1.0"
+authors = ["William Stevens <contact@wastevensv.com>"]
+
+[dependencies]
