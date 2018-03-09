@@ -2,7 +2,6 @@
 #![allow(non_camel_case_types)]
 #![allow(non_snake_case)]
 
-#[allow(dead_code)]
 include!(concat!(env!("OUT_DIR"), "/xwiimote.rs"));
 
 pub mod riimote {
@@ -10,8 +9,11 @@ pub mod riimote {
     
     use std::ffi::CStr;
     use std::str;
+    use std::mem;
+    use std::io;
 
 
+    #[derive(Copy,Clone,Debug)]
     pub struct Wiimote {
         dev: xwii_iface,
     }
@@ -36,7 +38,7 @@ pub mod riimote {
             }
         }
         pub fn new_from_path(syspath: String) -> Self {
-            let mut dev: xwii_iface = xwii_iface{_unused:[]};
+            let mut dev: xwii_iface = xwii_iface::default();
             unsafe {
                 let mut dev: *mut xwii_iface = &mut dev as *mut xwii_iface;
                 let dev: *mut *mut xwii_iface = &mut dev as *mut *mut xwii_iface;
@@ -49,8 +51,20 @@ pub mod riimote {
 
                 let ret = xwii_iface_watch(*dev, true);
                 assert!(ret == 0,"xwii_iface_watch Error: {}",ret);
+                return Wiimote{dev:**dev}
             }
-            return Wiimote{dev:dev}
+        }
+
+        pub fn get_event(mut self) -> Option<xwii_event> {
+            let mut event: xwii_event = xwii_event::default();
+            unsafe {
+                let ret = xwii_iface_dispatch(&mut self.dev, &mut event, mem::size_of::<xwii_event>());
+                if ret == -11 {
+                    return None
+                }
+                assert!(ret == 0,"xwii_iface_dispatch Error: {}",io::Error::from_raw_os_error(ret))
+            }
+            Some(event)
         }
     }
 }
