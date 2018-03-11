@@ -1,0 +1,48 @@
+diff --git a/lib/core.c b/lib/core.c
+index d6b6200..f119017 100644
+--- a/lib/core.c
++++ b/lib/core.c
+@@ -12,6 +12,7 @@
+ #include <stdbool.h>
+ #include <stdio.h>
+ #include <stdlib.h>
++#include <stdint.h>
+ #include <string.h>
+ #include <sys/epoll.h>
+ #include <sys/ioctl.h>
+@@ -1660,25 +1661,25 @@ static int dispatch_event(struct xwii_iface *dev, struct epoll_event *ep,
+ {
+ 	if (dev->umon && ep->data.ptr == dev->umon)
+ 		return read_umon(dev, ep, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_CORE])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_CORE].node)
+ 		return read_core(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_ACCEL])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_ACCEL].node)
+ 		return read_accel(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_IR])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_IR].node)
+ 		return read_ir(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_MOTION_PLUS])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_MOTION_PLUS].node)
+ 		return read_mp(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_NUNCHUK])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_NUNCHUK].node)
+ 		return read_nunchuk(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_CLASSIC_CONTROLLER])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_CLASSIC_CONTROLLER].node)
+ 		return read_classic(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_BALANCE_BOARD])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_BALANCE_BOARD].node)
+ 		return read_bboard(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_PRO_CONTROLLER])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_PRO_CONTROLLER].node)
+ 		return read_pro(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_DRUMS])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_DRUMS].node)
+ 		return read_drums(dev, ev);
+-	else if (ep->data.ptr == &dev->ifs[XWII_IF_GUITAR])
++	else if (*(uint64_t*)ep->data.ptr == dev->ifs[XWII_IF_GUITAR].node)
+ 		return read_guitar(dev, ev);
+ 
+ 	return -EAGAIN;

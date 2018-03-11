@@ -58,6 +58,14 @@ pub mod riimote {
         pub fn get_event(mut self) -> Option<xwii_event> {
             let mut event: xwii_event = xwii_event::default();
             unsafe {
+                let wii_fd :&mut libc::pollfd = &mut libc::pollfd{
+                    fd: self.dev.efd,
+                    events: libc::POLLIN,
+                    revents: 0};
+
+                let ret = libc::poll(wii_fd, 1, -1);
+                assert!(ret == 1,"poll Error: {}",io::Error::from_raw_os_error(-ret));
+
                 let ret = xwii_iface_poll(&mut self.dev, &mut event);
                 if ret == -11 {
                     return None
@@ -66,5 +74,4 @@ pub mod riimote {
             }
             Some(event)
         }
-    }
 }
