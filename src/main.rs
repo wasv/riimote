@@ -11,6 +11,7 @@ fn main() {
             event = wmote.get_event();
         }
         let event = event.unwrap();
+        println!("{:?}",event.time)
     } else {
         println!("No WiiMote found!");
         process::exit(-1);

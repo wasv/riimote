@@ -223,6 +223,7 @@ name = "riimote"
 version = "0.1.0"
 dependencies = [
  "bindgen 0.33.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "libc 0.2.39 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]
